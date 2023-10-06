@@ -14,6 +14,15 @@ import javax.inject.Inject
 
 class TransactionMapper @Inject constructor() {
     fun TransactionEntity.toDomain(): Either<String, Transaction> = either {
+        when (type) {
+            TransactionType.INCOME ->
+                TransactionType.EXPENSE
+
+            ->
+                TransactionType.TRANSFER
+
+            ->
+        }
         Transaction(
             id = TransactionId(id),
             title = title?.let { NotBlankTrimmedString.from(it) },

@@ -8,27 +8,41 @@ import com.ivy.data.model.TransactionId
 import com.ivy.data.repository.TransactionRepository
 import com.ivy.data.repository.mapper.TransactionMapper
 import com.ivy.data.source.LocalTransactionDataSource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.time.LocalDateTime
 import java.util.UUID
 import javax.inject.Inject
 
 class TransactionRepositoryImpl @Inject constructor(
     private val dataSource: LocalTransactionDataSource,
-    mapper: TransactionMapper
+    private val mapper: TransactionMapper
 ) : TransactionRepository {
     override suspend fun findAll(): List<Transaction> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            dataSource.findAll().mapNotNull {
+                with(mapper) { it.toDomain() }.getOrNull()
+            }
+        }
     }
 
     override suspend fun findAllLimit1(): List<Transaction> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            dataSource.findAllLimit1().mapNotNull {
+                with(mapper) { it.toDomain() }.getOrNull()
+            }
+        }
     }
 
     override suspend fun findAllByTypeAndAccount(
         type: TransactionType,
         accountId: AccountId
     ): List<Transaction> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            dataSource.findAllByTypeAndAccount(type, accountId.value).mapNotNull {
+                with(mapper) { it.toDomain() }.getOrNull()
+            }
+        }
     }
 
     override suspend fun findAllByTypeAndAccountBetween(
@@ -37,7 +51,11 @@ class TransactionRepositoryImpl @Inject constructor(
         startDate: LocalDateTime,
         endDate: LocalDateTime
     ): List<Transaction> {
-        TODO("Not yet implemented")
+        return withContext(Dispatchers.IO) {
+            dataSource.findAllByTypeAndAccountBetween().mapNotNull {
+
+            }
+        }
     }
 
     override suspend fun findAllTransfersToAccount(
