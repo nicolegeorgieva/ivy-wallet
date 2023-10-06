@@ -17,6 +17,7 @@ import com.ivy.data.model.primitive.AssetCode
 import com.ivy.data.model.primitive.NotBlankTrimmedString
 import com.ivy.data.model.primitive.PositiveDouble
 import java.time.Instant
+import java.time.ZoneOffset
 import javax.inject.Inject
 
 class TransactionMapper @Inject constructor() {
@@ -24,21 +25,24 @@ class TransactionMapper @Inject constructor() {
         when (type) {
             TransactionType.INCOME -> Income(
                 id = TransactionId(id),
-                title = title?.let { NotBlankTrimmedString(it) },
-                description = description?.let { NotBlankTrimmedString(it) },
+                title = title.optionalString(),
+                description = description.optionalString(),
                 category = categoryId?.let { CategoryId(it) },
-                time = Instant.EPOCH,
-                settled = false,// TODO
+                time = parseTime().bind(),
+                settled = dateTime != null,
                 metadata = TransactionMetadata(recurringRuleId, loanId, loanRecordId),
-                lastUpdated = Instant.EPOCH,// TODO
+                lastUpdated = Instant.EPOCH,
                 removed = isDeleted,
-                value = Value(amount = PositiveDouble(amount), asset = AssetCode(""))// TODO
+                value = Value(
+                    amount = PositiveDouble(amount),
+                    asset = AssetCode("") // TODO
+                )
             )
 
             TransactionType.EXPENSE -> Expense(
                 id = TransactionId(id),
-                title = title?.let { NotBlankTrimmedString(it) },
-                description = description?.let { NotBlankTrimmedString(it) },
+                title = title.optionalString(),
+                description = description.optionalString(),
                 category = categoryId?.let { CategoryId(it) },
                 time = Instant.EPOCH,
                 settled = false,// TODO
@@ -67,24 +71,75 @@ class TransactionMapper @Inject constructor() {
     }
 
     fun Transaction.toEntity(): TransactionEntity {
-        return TransactionEntity(
-            accountId =,
-            type = TransactionType,
-            amount = Double,
-            toAccountId = null,
-            toAmount = null,
-            title = null,
-            description = description?.value,
-            dateTime = time,
-            categoryId = category?.value,
-            dueDate = null,
-            recurringRuleId = null,
-            attachmentUrl = null,
-            loanId = null,
-            loanRecordId = null,
-            isSynced = false,
-            isDeleted = removed,
-            id = id.value
-        )
+        return when (this) {
+            is Expense -> TransactionEntity(
+                accountId = id.value,
+                type = TransactionType.EXPENSE,
+                amount = value.amount.value,
+                toAccountId = null,
+                toAmount = null,
+                title = null,
+                description = description?.value,
+                dateTime = time,
+                categoryId = category?.value,
+                dueDate = null,
+                recurringRuleId = null,
+                attachmentUrl = null,
+                loanId = null,
+                loanRecordId = null,
+                isSynced = false,
+                isDeleted = removed,
+                id = id.value
+            )
+
+            is Income -> TransactionEntity(
+                accountId = id.value,
+                type = TransactionType.INCOME,
+                amount = value.amount.value,
+                toAccountId = null,
+                toAmount = null,
+                title = null,
+                description = description?.value,
+                dateTime = time,
+                categoryId = category?.value,
+                dueDate = null,
+                recurringRuleId = null,
+                attachmentUrl = null,
+                loanId = null,
+                loanRecordId = null,
+                isSynced = false,
+                isDeleted = removed,
+                id = id.value
+            )
+
+            is Transfer -> TransactionEntity(
+                accountId = id.value,
+                type = TransactionType.TRANSFER,
+                amount = value.amount.value,
+                toAccountId = null,
+                toAmount = null,
+                title = null,
+                description = description?.value,
+                dateTime = time,
+                categoryId = category?.value,
+                dueDate = null,
+                recurringRuleId = null,
+                attachmentUrl = null,
+                loanId = null,
+                loanRecordId = null,
+                isSynced = false,
+                isDeleted = removed,
+                id = id.value
+            )
+        }
+    }
+
+    private fun TransactionEntity.parseTime(): Either<String, Instant> {
+        val date = dateTime ?: dueDate ?: return Either.Left("Missing transaction date")
+        return Either.Right(date.toInstant(ZoneOffset.UTC))
+    }
+
+    private fun String?.optionalString(): NotBlankTrimmedString? {
+        return this?.let { NotBlankTrimmedString.from(it).getOrNull() }
     }
 }
