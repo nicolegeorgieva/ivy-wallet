@@ -12,8 +12,6 @@ import java.time.Instant
 import javax.inject.Inject
 
 class CategoryMapper @Inject constructor() {
-    val test = "Hello"
-
     fun CategoryEntity.toDomain(): Either<String, Category> = either {
         Category(
             id = CategoryId(id),
