@@ -52,9 +52,10 @@ class TransactionRepositoryImpl @Inject constructor(
         endDate: LocalDateTime
     ): List<Transaction> {
         return withContext(Dispatchers.IO) {
-            dataSource.findAllByTypeAndAccountBetween().mapNotNull {
-
-            }
+            dataSource.findAllByTypeAndAccountBetween(type, accountId.value, startDate, endDate)
+                .mapNotNull {
+                    with(mapper) { it.toDomain() }.getOrNull()
+                }
         }
     }
 

@@ -3,6 +3,7 @@ package com.ivy.data.repository.mapper
 import arrow.core.Either
 import arrow.core.raise.either
 import com.ivy.base.model.TransactionType
+import com.ivy.base.time.convertToLocal
 import com.ivy.data.db.entity.TransactionEntity
 import com.ivy.data.model.AccountId
 import com.ivy.data.model.CategoryId
@@ -80,7 +81,7 @@ class TransactionMapper @Inject constructor() {
                 toAmount = null,
                 title = null,
                 description = description?.value,
-                dateTime = time,
+                dateTime = time.convertToLocal().toLocalDateTime(),
                 categoryId = category?.value,
                 dueDate = null,
                 recurringRuleId = null,
@@ -100,7 +101,7 @@ class TransactionMapper @Inject constructor() {
                 toAmount = null,
                 title = null,
                 description = description?.value,
-                dateTime = time,
+                dateTime = time.convertToLocal().toLocalDateTime(),
                 categoryId = category?.value,
                 dueDate = null,
                 recurringRuleId = null,
@@ -115,12 +116,12 @@ class TransactionMapper @Inject constructor() {
             is Transfer -> TransactionEntity(
                 accountId = id.value,
                 type = TransactionType.TRANSFER,
-                amount = value.amount.value,
+                amount = fromValue.amount.value,
                 toAccountId = null,
                 toAmount = null,
                 title = null,
                 description = description?.value,
-                dateTime = time,
+                dateTime = time.convertToLocal().toLocalDateTime(),
                 categoryId = category?.value,
                 dueDate = null,
                 recurringRuleId = null,
