@@ -2,10 +2,10 @@ package com.ivy.data.db.dao.read
 
 import androidx.room.Dao
 import androidx.room.Query
-import com.ivy.data.db.entity.TransactionEntity
 import com.ivy.base.model.TransactionType
+import com.ivy.data.db.entity.TransactionEntity
 import java.time.LocalDateTime
-import java.util.*
+import java.util.UUID
 
 @Dao
 interface TransactionDao {
@@ -154,24 +154,6 @@ interface TransactionDao {
         "SELECT * FROM transactions WHERE isDeleted = 0 AND recurringRuleId = :recurringRuleId ORDER BY dateTime DESC"
     )
     suspend fun findAllByRecurringRuleId(recurringRuleId: UUID): List<TransactionEntity>
-
-    @Query(
-        "SELECT * FROM transactions WHERE isDeleted = 0 AND dateTime >= :startDate AND dateTime <= :endDate AND type = :type ORDER BY dateTime DESC"
-    )
-    suspend fun findAllBetweenAndType(
-        startDate: LocalDateTime,
-        endDate: LocalDateTime,
-        type: TransactionType
-    ): List<TransactionEntity>
-
-    @Query(
-        "SELECT * FROM transactions WHERE isDeleted = 0 AND dateTime >= :startDate AND dateTime <= :endDate AND recurringRuleId = :recurringRuleId ORDER BY dateTime DESC"
-    )
-    suspend fun findAllBetweenAndRecurringRuleId(
-        startDate: LocalDateTime,
-        endDate: LocalDateTime,
-        recurringRuleId: UUID
-    ): List<TransactionEntity>
 
     @Query("SELECT * FROM transactions WHERE id = :id")
     suspend fun findById(id: UUID): TransactionEntity?

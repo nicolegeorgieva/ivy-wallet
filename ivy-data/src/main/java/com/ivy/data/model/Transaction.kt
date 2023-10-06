@@ -65,9 +65,9 @@ data class Transfer(
 ) : Transaction
 
 data class TransactionMetadata(
-    val recurringRuleId: UUID,
+    val recurringRuleId: UUID?,
     // This refers to the loan id that is linked with a transaction
-    val loanId: UUID? = null,
+    val loanId: UUID?,
     // This refers to the loan record id that is linked with a transaction
-    val loanRecordId: UUID,
+    val loanRecordId: UUID?
 )
