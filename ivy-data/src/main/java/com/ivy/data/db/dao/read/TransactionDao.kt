@@ -45,16 +45,6 @@ interface TransactionDao {
     ): List<TransactionEntity>
 
     @Query(
-        "SELECT * FROM transactions WHERE isDeleted = 0 AND type = :type and toAccountId = :toAccountId and dateTime >= :startDate AND dateTime <= :endDate ORDER BY dateTime DESC"
-    )
-    suspend fun findAllTransfersToAccountBetween(
-        toAccountId: UUID,
-        startDate: LocalDateTime,
-        endDate: LocalDateTime,
-        type: TransactionType = TransactionType.TRANSFER
-    ): List<TransactionEntity>
-
-    @Query(
         "SELECT * FROM transactions WHERE isDeleted = 0 AND dateTime >= :startDate AND dateTime <= :endDate ORDER BY dateTime DESC"
     )
     suspend fun findAllBetween(

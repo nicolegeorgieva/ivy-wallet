@@ -47,20 +47,6 @@ class LocalTransactionDataSource @Inject constructor(
         return transactionDao.findAllTransfersToAccount(toAccountId, type)
     }
 
-    suspend fun findAllTransfersToAccountBetween(
-        toAccountId: UUID,
-        startDate: LocalDateTime,
-        endDate: LocalDateTime,
-        type: TransactionType = TransactionType.TRANSFER
-    ): List<TransactionEntity> {
-        return transactionDao.findAllTransfersToAccountBetween(
-            toAccountId,
-            startDate,
-            endDate,
-            type
-        )
-    }
-
     suspend fun findAllBetween(
         startDate: LocalDateTime,
         endDate: LocalDateTime
