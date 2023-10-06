@@ -18,6 +18,8 @@ sealed interface Transaction : Syncable {
     val time: Instant
     val settled: Boolean
     val metadata: TransactionMetadata
+    override val lastUpdated: Instant
+    override val removed: Boolean
 }
 
 data class Income(
