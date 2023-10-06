@@ -15,9 +15,6 @@ interface TransactionDao {
     @Query("SELECT * FROM transactions WHERE isDeleted = 0 LIMIT 1")
     suspend fun findAll_LIMIT_1(): List<TransactionEntity>
 
-    @Query("SELECT * FROM transactions WHERE isDeleted = 0 AND type = :type ORDER BY dateTime DESC")
-    suspend fun findAllByType(type: TransactionType): List<TransactionEntity>
-
     @Query(
         "SELECT * FROM transactions WHERE isDeleted = 0 AND type = :type and accountId = :accountId ORDER BY dateTime DESC"
     )

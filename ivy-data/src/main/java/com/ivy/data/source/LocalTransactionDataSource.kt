@@ -20,10 +20,6 @@ class LocalTransactionDataSource @Inject constructor(
         return transactionDao.findAll_LIMIT_1()
     }
 
-    suspend fun findAllByType(type: TransactionType): List<TransactionEntity> {
-        return transactionDao.findAllByType(type)
-    }
-
     suspend fun findAllByTypeAndAccount(
         type: TransactionType,
         accountId: UUID
@@ -186,5 +182,37 @@ class LocalTransactionDataSource @Inject constructor(
 
     suspend fun findAllByLoanId(loanId: UUID): List<TransactionEntity> {
         return transactionDao.findAllByLoanId(loanId)
+    }
+
+    suspend fun save(value: TransactionEntity) {
+        writeTransactionDao.save(value)
+    }
+
+    suspend fun saveMany(value: List<TransactionEntity>) {
+        writeTransactionDao.saveMany(value)
+    }
+
+    suspend fun flagDeleted(id: UUID) {
+        writeTransactionDao.flagDeleted(id)
+    }
+
+    suspend fun flagDeletedByRecurringRuleIdAndNoDateTime(recurringRuleId: UUID) {
+        writeTransactionDao.flagDeletedByRecurringRuleIdAndNoDateTime(recurringRuleId)
+    }
+
+    suspend fun flagDeletedByAccountId(accountId: UUID) {
+        writeTransactionDao.flagDeletedByAccountId(accountId)
+    }
+
+    suspend fun deleteById(id: UUID) {
+        writeTransactionDao.deleteById(id)
+    }
+
+    suspend fun deleteAllByAccountId(accountId: UUID) {
+        writeTransactionDao.deleteAllByAccountId(accountId)
+    }
+
+    suspend fun deleteAll() {
+        writeTransactionDao.deleteAll()
     }
 }
